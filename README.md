@@ -37,9 +37,8 @@ and [Presentation](https://www.youtube.com/watch?v=Sfs5ya2vEyg&ab_channel=NeurAI
 
 #### How to Run:
 This branch runs baseline version of SSL. 
- python train.py --config-file  config/simclr.yaml
- 
- To run our method, switch to branch "dogo" for more info. 
+<pre> python train.py --config-file  config/simclr.yaml </pre>
+To run our method, switch to branch "dogo" for more info. 
 
 #### Cite our work:
 <pre>
