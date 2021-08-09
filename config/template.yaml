@@ -28,7 +28,7 @@ train:
     batchsize: 256
     KL_temperature: 0.1
     criterion_weight: [1, 1, 100, 1]
-    save_dir: /data/output/prashant.bhat/local/runs
+    save_dir: /output
     num_workers: 4
 
 eval:
@@ -48,5 +48,5 @@ eval:
         weight_decay: 1.e-6
         momentum: 0
         scheduler: False
-    model_path: /data/output/prashant.bhat/runs/_bs_256/Thu_Feb_18_12:51:16_2021/checkpoint_model2_20_resnet18.pth
+    model_path: /output/checkpoint_resnet18.pth
     num_workers: 4
