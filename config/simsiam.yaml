@@ -1,0 +1,42 @@
+train:
+    model: simsiam
+    backbone: resnet18
+    epochs: 1000
+    optimizer:
+        name: adam
+        lr: 0.0003
+        weight_decay: 1.e-6
+        momentum: 0
+        scheduler: True
+    dataset:
+        name: CIFAR10
+        data_dir: /data/input/datasets/CIFAR-10
+        img_size: 32
+    batchsize: 256
+    temperature: 0.5
+    n_proj: 2048
+    momentum:
+        m_backbone: False
+        m_update: 0.990
+    criterion_weight: [1, 0]
+    save_dir: /output/ssl/round_1/
+    num_workers: 4
+
+eval:
+    model: simsiam
+    backbone: resnet18
+    dataset:
+        name: CIFAR10
+        data_dir: /data/input/datasets/CIFAR-10
+        classes: 10
+        img_size: 32
+    epochs: 100
+    batchsize: 64
+    optimizer:
+        name: adam
+        lr: 0.0003
+        weight_decay: 1.e-6
+        momentum: 0
+        scheduler: False
+    model_path: /output/ssl/round_1/
+    num_workers: 4
