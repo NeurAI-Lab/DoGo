@@ -3,6 +3,18 @@ import random
 from torchvision import transforms
 
 
+class MultiTransform:
+    """
+    Combination of two Transforms
+    """
+
+    def __init__(self, transforms):
+        self.transforms = transforms
+
+    def __call__(self, x):
+        return self.transforms[0](x), self.transforms[1](x)
+
+
 def norm_mean_std(size):
     if size == 32:  # CIFAR10, CIFAR100
         normalize = transforms.Normalize([0.4914, 0.4822, 0.4465], [0.247, 0.243, 0.261])

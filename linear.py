@@ -1,8 +1,3 @@
-"""
-Linear Evaluation script.
-Use config/*.yaml by changing it appropriately
-"""
-
 import sys
 sys.path.insert(0, '.')
 from models import SimCLR, SimSiam
@@ -11,9 +6,8 @@ import numpy as np
 from datetime import datetime
 import torch
 import os
-from config.option import Options
-from util.utils import summary_writer, logger
-from util.utils import log
+from config import Options
+from util import summary_writer, logger, log
 import logging
 
 import warnings
@@ -34,9 +28,9 @@ if __name__ == '__main__':
     log("arguments parsed: {}".format(args))
 
     if args.eval.model == 'simclr':
-        model = SimCLR(args, args.eval.dataset.img_size, backbone=args.eval.backbone)
+        model = SimCLR(args.eval.n_proj, args.eval.dataset.img_size, backbone=args.eval.backbone)
     elif args.eval.model == 'simsiam':
-        model = SimSiam(args, args.eval.dataset.img_size, backbone=args.eval.backbone)
+        model = SimSiam(args.eval.n_proj, args.eval.dataset.img_size, backbone=args.eval.backbone)
 
     state_dict = torch.load(args.eval.model_path, map_location=args.device)
     model.load_state_dict(state_dict)

@@ -3,10 +3,6 @@ import torch.nn.functional as F
 
 
 class KLLoss(nn.Module):
-    """
-    KL-Divergence symmetric loss between two distributions
-    Used in here for knowledge distillation
-    """
 
     def __init__(self):
         super(KLLoss, self).__init__()

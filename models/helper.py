@@ -18,7 +18,7 @@ class LinearEvaluation(nn.Module):
 
 def get_encoder(encoder, img_size):
     """
-    Get modified ResNet backbone
+    Get Resnet backbone
     """
     def cifar_resnet(resnet):
         f = []

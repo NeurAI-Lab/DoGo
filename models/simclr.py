@@ -6,18 +6,18 @@ from models.helper import get_encoder
 
 
 class SimCLR(nn.Module):
-    def __init__(self, args, img_size, backbone='resnet50'):
+    def __init__(self, n_proj, img_size, backbone='resnet50'):
         super(SimCLR, self).__init__()
-        self.f, args.projection_size = get_encoder(backbone, img_size)
+        self.f, self.projection_size = get_encoder(backbone, img_size)
         if img_size >= 100:
-            args.projection_size = self.f.fc.out_features
+            self.projection_size = self.f.fc.out_features
 
         # projection head
         self.g = nn.Sequential(
-                                nn.Linear(args.projection_size, 512, bias=False),
+                                nn.Linear(self.projection_size, 512, bias=False),
                                 nn.BatchNorm1d(512),
                                 nn.ReLU(inplace=True),
-                                nn.Linear(512, args.train.n_proj, bias=True)
+                                nn.Linear(512, n_proj, bias=True)
                                )
 
     def forward(self, x, y=None):

@@ -9,20 +9,20 @@ class SimSiam(nn.Module):
     Exploring Simple Siamese Representation Learning
     https://arxiv.org/abs/2011.10566
     """
-    def __init__(self, args, img_size, backbone='resnet50'):
+    def __init__(self, n_proj, img_size, backbone='resnet50'):
         super(SimSiam, self).__init__()
-        self.f, args.projection_size = get_encoder(backbone, img_size)
+        self.f, self.projection_size = get_encoder(backbone, img_size)
         if img_size >= 100:
-            args.projection_size = self.f.fc.out_features
+            self.projection_size = self.f.fc.out_features
 
         # projection MLP
         self.g = nn.Sequential(
-            nn.Linear(args.projection_size, 2048),
+            nn.Linear(self.projection_size, 2048),
             nn.BatchNorm1d(2048),
             nn.ReLU(inplace=True),
-            # nn.Linear(2048, 2048),
-            # nn.BatchNorm1d(2048),
-            # nn.ReLU(inplace=True),
+            nn.Linear(2048, 2048),
+            nn.BatchNorm1d(2048),
+            nn.ReLU(inplace=True),
             nn.Linear(2048, 2048),
             nn.BatchNorm1d(2048),
         )
@@ -32,7 +32,7 @@ class SimSiam(nn.Module):
             nn.Linear(2048, 512, bias=False),
             nn.BatchNorm1d(512),
             nn.ReLU(inplace=True),
-            nn.Linear(512, args.train.n_proj),
+            nn.Linear(512, n_proj),
         )
 
     def forward(self, x, y=None):

@@ -8,7 +8,7 @@ from torchvision.datasets import CIFAR10, CIFAR100, STL10
 import os
 from util.torchlist import ImageFilelist
 from models import LinearEvaluation
-from util.utils import log, save_checkpoint, tiny_imagenet, CIFAR10Imbalanced
+from util import log, save_checkpoint, tiny_imagenet, CIFAR10Imbalanced
 from augmentations import TestTransform
 from optimizers.lars import LARC
 from torch.optim.lr_scheduler import CosineAnnealingLR
@@ -51,9 +51,9 @@ def testloaderSimCLR(args, dataset, transform, batchsize, data_dir, val_split=0.
     train_size = len(train_d) - val_size
     train_d, val_d = random_split(train_d, [train_size, val_size])
 
-    train_loader = DataLoader(train_d, batch_size=batchsize, shuffle=True, drop_last=True)
-    val_loader = DataLoader(val_d, batch_size=batchsize, shuffle=True, drop_last=True)
-    test_loader = DataLoader(test_d, batch_size=batchsize, shuffle=False, drop_last=True)
+    train_loader = DataLoader(train_d, batch_size=batchsize, shuffle=True, drop_last=True, num_workers=args.eval.num_workers)
+    val_loader = DataLoader(val_d, batch_size=batchsize, shuffle=True, drop_last=True, num_workers=args.eval.num_workers)
+    test_loader = DataLoader(test_d, batch_size=batchsize, shuffle=False, drop_last=True, num_workers=args.eval.num_workers)
     log("Took {} time to load data!".format(datetime.now() - args.start_time))
     return train_loader, val_loader, test_loader
 
@@ -98,7 +98,7 @@ def testSSL(args, writer, simclr):
     for param in simclr.parameters():
         param.requires_grad = False
 
-    linear_model = LinearEvaluation(args.projection_size, args.eval.dataset.classes)
+    linear_model = LinearEvaluation(simclr.projection_size, args.eval.dataset.classes)
     if torch.cuda.device_count() > 1:
         linear_model = nn.DataParallel(linear_model)
     linear_model = linear_model.to(args.device)
@@ -144,7 +144,7 @@ def testSSL(args, writer, simclr):
 
     # Load best linear model and run inference on test set
     state_dict = torch.load(os.path.join(args.log_dir, 'checkpoint_best_linear_model_{}_{}.pth'.format(args.eval.dataset.name, ck_name)), map_location=args.device)
-    linear_best_model = LinearEvaluation(args.projection_size, args.eval.dataset.classes)
+    linear_best_model = LinearEvaluation(simclr.projection_size, args.eval.dataset.classes)
     linear_best_model.load_state_dict(state_dict)
     linear_best_model = linear_best_model.cuda()
     test_loss, test_acc = train_or_val(args, test_loader, simclr, linear_best_model, loss_criterion, train=False)
@@ -159,11 +159,11 @@ def test_all_datasets(args, writer, model):
     """
     if args.eval.dataset.name is None or args.eval.dataset.data_dir is None:
         # CIFAR10
-        args.eval.dataset.img_size = 32
-        args.eval.dataset.name = "CIFAR10"
-        args.eval.dataset.data_dir = "/data/input/datasets/CIFAR-10"
-        args.eval.dataset.classes = 10
-        testSSL(args, writer, model)
+        # args.eval.dataset.img_size = 32
+        # args.eval.dataset.name = "CIFAR10"
+        # args.eval.dataset.data_dir = "/data/input/datasets/CIFAR-10"
+        # args.eval.dataset.classes = 10
+        # testSSL(args, writer, model)
         # # # CIFAR100
         # args.eval.dataset.img_size = 32
         # args.eval.dataset.name = "CIFAR100"
@@ -200,5 +200,6 @@ def test_all_datasets(args, writer, model):
         # args.eval.dataset.data_dir = "/input/DomainNet"
         # args.eval.dataset.classes = 345
         # testSSL(args, writer, model)
+        print()
     else:
         testSSL(args, writer, model)

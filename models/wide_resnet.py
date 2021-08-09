@@ -1,5 +1,6 @@
 """
-Wider ResNet implementation
+Original author :
+https://bitbucket.navinfo.eu/projects/ONE/repos/art/browse/adversarial_defense/ACT/models/wideresnet.py?at=refs%2Fheads%2Fknowledge_distillation
 """
 
 import math

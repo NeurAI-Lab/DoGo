@@ -31,7 +31,6 @@ class SimCLRTransform:
                 ]
             )
 
-
     def __call__(self, x):
         return self.transform(x), self.transform(x)
 

@@ -6,9 +6,6 @@ import torch.nn as nn
 
 
 class SimSiamLoss(nn.Module):
-    """
-    Loss function defined in https://arxiv.org/abs/2011.10566
-    """
 
     def __init__(self):
         super(SimSiamLoss, self).__init__()

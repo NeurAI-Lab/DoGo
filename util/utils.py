@@ -20,8 +20,10 @@ def tiny_imagenet(data_root, img_size=64, train=True, transform=None):
         train_dataset = ImageFilelist(root=data_root, flist=os.path.join(data_root, train_kv), transform=transform)
         return train_dataset
     else:
-        train_dataset = ImageFilelist(root=data_root, flist=os.path.join(data_root, train_kv), transform=TestTransform(img_size))
-        test_dataset = ImageFilelist(root=data_root, flist=os.path.join(data_root, test_kv), transform=TestTransform(img_size))
+        train_dataset = ImageFilelist(root=data_root, flist=os.path.join(data_root, train_kv),
+                                      transform=TestTransform(img_size))
+        test_dataset = ImageFilelist(root=data_root, flist=os.path.join(data_root, test_kv),
+                                     transform=TestTransform(img_size))
         return train_dataset, test_dataset
 
 
@@ -45,7 +47,7 @@ def summary_writer(args, log_dir=None, filename_suffix=''):
     Create a tensorboard SummaryWriter
     """
     if log_dir is None:
-        args.log_dir = os.path.join(args.train.save_dir, "{}_bs_{}".format(args.train.backbone, args.train.batchsize),
+        args.log_dir = os.path.join(args.train.save_dir, "_bs_{}".format(args.train.batchsize),
                                     ctime().replace(' ', '_'))
         mkdir(args.log_dir)
     else:

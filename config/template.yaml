@@ -1,0 +1,52 @@
+train:
+    models:
+        -   name: simclr
+            backbone: resnet18
+            optimizer:
+                name: adam
+                lr: 3.e-4
+                weight_decay: 1.e-6
+                scheduler: False
+            temperature: 0.5
+            n_proj: 128
+
+        -   name: simsiam
+            backbone: resnet18
+            optimizer:
+                name: adam
+                lr: 3.e-4
+                weight_decay: 1.e-6
+                scheduler: True
+            temperature: 0.5
+            n_proj: 2048
+
+    epochs: 3
+    dataset:
+        name: CIFAR10
+        data_dir: /data/input/datasets/CIFAR-10
+        img_size: 32
+    batchsize: 256
+    KL_temperature: 0.1
+    criterion_weight: [1, 1, 100, 1]
+    save_dir: /data/output/prashant.bhat/local/runs
+    num_workers: 4
+
+eval:
+    model: simsiam
+    backbone: resnet18
+    n_proj: 2048
+    dataset:
+        name: CIFAR10
+        data_dir: /data/input/datasets/CIFAR-10
+        classes: 10
+        img_size: 32
+    epochs: 2
+    batchsize: 64
+    optimizer:
+        name: adam
+        lr: 0.0003
+        weight_decay: 1.e-6
+        momentum: 0
+        scheduler: False
+    model_path: /data/output/prashant.bhat/runs/_bs_256/Thu_Feb_18_12:51:16_2021/checkpoint_model2_20_resnet18.pth
+    num_workers: 4

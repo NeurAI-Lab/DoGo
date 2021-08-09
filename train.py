@@ -1,8 +1,3 @@
-"""
-SSL training script script.
-Use config/*.yaml by changing it appropriately
-"""
-
 import torch
 import os
 import numpy as np
@@ -14,14 +9,14 @@ from torchvision.datasets import CIFAR10, CIFAR100, STL10, ImageFolder
 from torch.optim.lr_scheduler import CosineAnnealingLR
 import sys
 sys.path.insert(0, '.')
-from util.utils import logger, summary_writer, log, tiny_imagenet, CIFAR10Imbalanced
+from util import logger, summary_writer, log, tiny_imagenet, CIFAR10Imbalanced
 from util.train_util import trainSSL, get_criteria
-from augmentations import SimCLRTransform, SimSiamTransform
-from config.option import Options
+from augmentations import SimCLRTransform, SimSiamTransform, MultiTransform
+from config import Options
 from models import SimCLR, SimSiam
-np.random.seed(20)
-random.seed(20)
-torch.manual_seed(20)
+np.random.seed(10)
+random.seed(10)
+torch.manual_seed(10)
 
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -56,23 +51,32 @@ if __name__ == "__main__":
     args.start_time = datetime.now()
     log("Starting at  {}".format(datetime.now()))
     log("arguments parsed: {}".format(args))
+    models = []
+    optimizers = []
+    transforms = []
+    schedulers = []
+    for module in args.train.models:
+        if module['name'] == 'simclr':
+            model = SimCLR(module['n_proj'], args.train.dataset.img_size, backbone=module['backbone'])
+            transform = SimCLRTransform(args.train.dataset.img_size)
+        elif module['name'] == 'simsiam':
+            model = SimSiam(module['n_proj'], args.train.dataset.img_size, backbone=module['backbone'])
+            transform = SimSiamTransform(args.train.dataset.img_size)
+
+        optimizer = Adam(model.parameters(), lr=module['optimizer']['lr'], weight_decay=module['optimizer']['weight_decay'])
+
+        scheduler = None
+        if module['optimizer']['scheduler']:
+            scheduler = CosineAnnealingLR(optimizer, T_max=args.train.epochs, eta_min=3e-4)
+        models.append(model)
+        transforms.append(transform)
+        optimizers.append(optimizer)
+        schedulers.append(scheduler)
+
+    transform = MultiTransform(transforms)
+    train_loader = trainloaderSSL(args, transform)
     criterion = get_criteria(args)
-
-    if args.train.model == 'simclr':
-        model = SimCLR(args, args.train.dataset.img_size, backbone=args.train.backbone)
-        transform = SimCLRTransform(args.train.dataset.img_size)
-        train_loader = trainloaderSSL(args, transform)
-    elif args.train.model == 'simsiam':
-        model = SimSiam(args, args.train.dataset.img_size, backbone=args.train.backbone)
-        transform = SimSiamTransform(args.train.dataset.img_size)
-        train_loader = trainloaderSSL(args, transform)
-
-    scheduler = None
-    if args.train.optimizer.name == 'adam':
-        optimizer = Adam(model.parameters(), lr=args.train.optimizer.lr, weight_decay=args.train.optimizer.weight_decay)
-    if args.train.optimizer.scheduler:
-        scheduler = CosineAnnealingLR(optimizer, T_max=args.train.epochs, eta_min=3e-4)
-    trainSSL(args, model, train_loader, optimizer, criterion, args.writer, scheduler)
+    trainSSL(args, models, train_loader, optimizers, criterion, args.writer, schedulers)
 
 
 

@@ -12,7 +12,7 @@ class NTXent(nn.Module):
     def __init__(self, args):
         super(NTXent, self).__init__()
         self.batch_size = args.train.batchsize
-        self.temperature = args.train.temperature
+        self.temperature = 0.5
         self.device = args.device
         self.mask = positive_mask(args.train.batchsize)
         self.criterion = nn.CrossEntropyLoss(reduction="sum")
@@ -38,8 +38,6 @@ class NTXent(nn.Module):
         """
         z = torch.cat((zx, zy), dim=0)
         sim = self.similarity_f(z.unsqueeze(1), z.unsqueeze(0)) / self.temperature
-        # Since projections are already normalized using F.normalize,
-        # below function can be used instead of CosineSimilarity
         # sim = torch.div(torch.matmul(z, z.T), self.temperature)
 
         # Extract positive samples
