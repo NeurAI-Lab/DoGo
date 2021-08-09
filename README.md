@@ -37,7 +37,7 @@ and [Presentation](https://www.youtube.com/watch?v=Sfs5ya2vEyg&ab_channel=NeurAI
 
 #### How to Run:
 To run our method: 
-<pre> python train.py --config-file  config/simclr.yaml </pre>
+<pre> python train.py --config-file  config/template.yaml </pre>
 
 
 #### Cite our work:
