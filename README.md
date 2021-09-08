@@ -3,7 +3,7 @@
 This is the official repo for the CVPR 2021 L2ID paper ["Distill on the Go: Online knowledge distillation in 
 self-supervised learning"](https://openaccess.thecvf.com/content/CVPR2021W/LLID/html/Bhat_Distill_on_the_Go_Online_Knowledge_Distillation_in_Self-Supervised_Learning_CVPRW_2021_paper.html)
 By [Prashant bhat](https://scholar.google.com/citations?view_op=list_works&hl=en&user=jrEETfgAAAAJ),
-[Elahe Arani](https://www.researchgate.net/profile/Elahe-Arani), 
+[Elahe Arani](https://www.linkedin.com/in/elahe-arani-630870b2/), 
 and [Bahram Zonooz](https://scholar.google.com/citations?hl=en&user=FZmIlY8AAAAJ)
 
 ![alt text](images/dogo.png "ACT")
@@ -24,7 +24,7 @@ out-of-distribution data.
 
 For details, please see the
 [Paper](https://openaccess.thecvf.com/content/CVPR2021W/LLID/html/Bhat_Distill_on_the_Go_Online_Knowledge_Distillation_in_Self-Supervised_Learning_CVPRW_2021_paper.html)
-and [Presentation](https://www.youtube.com/watch?v=Sfs5ya2vEyg&ab_channel=NeurAI) 
+and [Presentation](https://www.youtube.com/watch?v=Sfs5ya2vEyg&ab_channel=NeurAI).
 
 
 #### Requirements: 
